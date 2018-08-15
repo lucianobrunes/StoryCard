@@ -1,0 +1,73 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detailsScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:useDefaultMargins="true">
+
+        <TextView
+            android:id="@+id/nameLabelTextView"
+            style="@style/StoryLabelTextView"
+            android:layout_width="match_parent"
+            android:text="@string/label_titulo" />
+
+        <TextView
+            android:id="@+id/tituloTextView"
+            style="@style/StoryTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            />
+
+        <TextView
+            android:id="@+id/interessadoLabelTextView"
+            style="@style/StoryLabelTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_interessado"
+            android:layout_marginTop="10dp"
+            />
+
+        <TextView
+            android:id="@+id/interessadoTextView"
+            style="@style/StoryTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp" />
+
+        <TextView
+            android:id="@+id/necessidadeLabelTextView"
+            style="@style/StoryLabelTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_necessidade"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/necessidadeTextView"
+            style="@style/StoryTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/motivoLabelTextView"
+            style="@style/StoryLabelTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_motivo"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/motivoTextView"
+            style="@style/StoryTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"/>
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">SGA</string>
+    <string name="menuitem_edit">Editar</string>
+    <string name="menuitem_delete">Excluir</string>
+    <string name="hint_titulo_required">Título (Obrigatório)</string>
+    <string name="hint_interessado">Como um(a)</string>
+    <string name="hint_necessidade">Eu necessito</string>
+    <string name="hint_motivo">Para que eu possa</string>
+    <string name="label_titulo">Título:</string>
+    <string name="label_interessado">Como um(a):</string>
+    <string name="label_necessidade">Eu necessito:</string>
+    <string name="label_motivo">Para que eu possa:</string>
+    <string name="confirm_title">Confirma a exclusão?</string>
+    <string name="confirm_message">A story será definitivamente exlcuída!</string>
+    <string name="button_cancel">Cancelar</string>
+    <string name="button_delete">Excluir</string>
+    <string name="story_added">Story adicionada com sucesso!</string>
+    <string name="story_not_added">Story não foi adicionada devido a um erro!</string>
+    <string name="story_updated">Story atualizada.</string>
+    <string name="story_not_updated">Story não foi atualizada devido a um erro!</string>
+    <string name="invalid_query_uri">Query inválida Uri: </string>
+    <string name="invalid_insert_uri">Inserção inválida Uri: </string>
+    <string name="invalid_update_uri">Alteração inválida Uri: </string>
+    <string name="invalid_delete_uri">Exclusão inválida Uri: </string>
+    <string name="insert_failed">Inserão falhou:</string>
+
+    <string-array name="main_menu">
+        <item>1. Apostar</item>
+        <item>2. Cancelar</item>
+        <item>3. Reimprimir</item>
+        <item>4. Repetir</item>
+        <item>5. Resultados</item>
+        <item>6. Movimento</item>
+        <item>7. Premiadas</item>
+        <item>8. Atualizar</item>
+        <item>9. Terminal</item>
+    </string-array>
+</resources>

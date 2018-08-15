@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:keyWidth="25.00%p"
+    android:keyHeight="8.00%p">
+    <!--
+        android:horizontalGap="0.50%p"
+        android:verticalGap="0.50%p"
+        NOTE When we add a horizontalGap in pixels, this interferes with keyWidth in percentages adding up to 100%
+        NOTE When we have a horizontalGap (on Keyboard level) of 0, this make the horizontalGap (on Key level) to move from after the key to before the key... (I consider this a bug)
+     -->
+    <Row>
+        <Key android:codes="55005" android:keyIcon="@drawable/down_arrow_icon" android:isRepeatable="true" android:keyEdgeFlags="left"  />
+        <Key android:codes="55000" android:keyIcon="@drawable/up_arrow_icon" android:isRepeatable="true" android:keyEdgeFlags="right" android:horizontalGap="50.0%p" />
+    </Row>
+
+    <Row>
+        <Key android:codes="49"    android:keyLabel="1"  android:keyEdgeFlags="left" />
+        <Key android:codes="50"    android:keyLabel="2" />
+        <Key android:codes="51"    android:keyLabel="3" />
+        <Key android:codes="55006" android:keyIcon="@drawable/cancel_icon" android:isRepeatable="true" android:keyEdgeFlags="right"/>
+    </Row>
+
+    <Row>
+        <Key android:codes="52"    android:keyLabel="4" android:keyEdgeFlags="left"  />
+        <Key android:codes="53"    android:keyLabel="5" />
+        <Key android:codes="54"    android:keyLabel="6" />
+        <Key android:codes="-5"    android:keyIcon="@drawable/backspace_icon" android:isRepeatable="true" />
+    </Row>
+
+    <Row>
+        <Key android:codes="55"    android:keyLabel="7" android:keyEdgeFlags="left" />
+        <Key android:codes="56"    android:keyLabel="8" />
+        <Key android:codes="57"    android:keyLabel="9" />
+        <Key android:codes="55002" android:keyIcon="@drawable/enter_icon" android:isRepeatable="true" android:keyHeight="16.05%p" />
+    </Row>
+
+    <Row>
+        <Key android:codes="48"    android:keyLabel="*" android:keyEdgeFlags="left" />
+        <Key android:codes="48"    android:keyLabel="0" />
+        <Key android:codes="48"    android:keyLabel="#" />
+    </Row>
+</Keyboard>
