@@ -7,12 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import com.br.android.storycard.R;
 import com.br.android.storycard.view.sga.util.PrinterBluetooth;
-import com.br.android.storycard.view.storycard.DetailFragment;
+import com.br.android.storycard.view.storycard.AddEditFragment;
 
 public class MainActivitySga extends AppCompatActivity
         implements KeyboardFragment.KeyboardFragmentListener,
                    LoginFragment.LoginFragmentListener,
-                   MenuFragment.MenuFragmentListener {
+                   MenuFragment.MenuFragmentListener,
+                   AddEditFragment.AddEditFragmentListener{
 
     public static final String STORY_URI = "contact_uri";
     private KeyboardFragment keyboardFragment; // displays keyboard
@@ -58,13 +59,12 @@ public class MainActivitySga extends AppCompatActivity
             PrinterBluetooth printer = new PrinterBluetooth();
             printer.sendToPrint();
         } else {
-            displayStory(contactUri, R.id.topPaneContainer);
+            displayItemMenu(contactUri, R.id.topPaneContainer);
         }
     }
 
     // display main menu
     private void displayMainMenu(int viewID) {
-        //DoubleTapListViewFragment doubleTapListViewFragment = new DoubleTapListViewFragment();
         Editable v = loginFragment.getEditTextV().getText();
         Editable s = loginFragment.getEditTextS().getText();
 
@@ -75,16 +75,14 @@ public class MainActivitySga extends AppCompatActivity
         arguments.putString("s", String.valueOf(s));
         menuFragment.setArguments(arguments);
 
-        // use a FragmentTransaction to display the DoubleTapListViewFragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(viewID, menuFragment);
-        //transaction.replace(viewID, doubleTapListViewFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
 
-    // display a contact
-    private void displayStory(Uri contactUri, int viewID) {
+    // display item menu
+    private void displayItemMenu(Uri contactUri, int viewID) {
         DetailFragmentSga detailFragmentSga = new DetailFragmentSga();
 
         // specify story's Uri as an argument to the DetailFragment
@@ -98,5 +96,39 @@ public class MainActivitySga extends AppCompatActivity
         transaction.replace(viewID, detailFragmentSga);
         transaction.addToBackStack(null);
         transaction.commit(); // causes DetailFragment to display
+    }
+
+    // update GUI after new menu or updated menu saved
+    @Override
+    public void onAddEditCompleted(Uri storyUri) {
+        // removes top of back stack
+        getSupportFragmentManager().popBackStack();
+        menuFragment.updateMenuList(); // refresh menu
+        displayMainMenu(R.id.topPaneContainer);
+    }
+
+    // display AddEditFragment to add a new story
+    @Override
+    public void onAddMenu() {
+         displayAddEditFragment(R.id.topPaneContainer, null);
+    }
+
+    // display fragment for adding a new or editing an existing story
+    private void displayAddEditFragment(int viewID, Uri contactUri) {
+        AddEditFragment addEditFragment = new AddEditFragment();
+
+        // if editing existing story, provide storyUri as an argument
+        if (contactUri != null) {
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(STORY_URI, contactUri);
+            addEditFragment.setArguments(arguments);
+        }
+
+        // use a FragmentTransaction to display the AddEditFragment
+        FragmentTransaction transaction =
+                getSupportFragmentManager().beginTransaction();
+        transaction.replace(viewID, addEditFragment);
+        transaction.addToBackStack(null);
+        transaction.commit(); // causes AddEditFragment to display
     }
 }

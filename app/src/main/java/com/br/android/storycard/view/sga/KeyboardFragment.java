@@ -10,14 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-
 import com.br.android.storycard.R;
 
 public class KeyboardFragment extends Fragment {
 
     private KeyboardView mKeyboardView;
-    private LoginFragment.LoginFragmentListener listenerLogin;
-
 
     // callback method implemented by MainActivity
     public interface KeyboardFragmentListener {

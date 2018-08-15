@@ -2,6 +2,7 @@ package com.br.android.storycard.view.sga;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ public class MenuFragment extends Fragment implements LoaderManager.LoaderCallba
     public interface MenuFragmentListener {
         // called when story selected
         void onItemMenuSelected(Uri storyUri, Long rowId);
+        void onAddMenu();
     }
 
     // used to inform the MainActivity when um item menu is selected
@@ -85,6 +87,20 @@ public class MenuFragment extends Fragment implements LoaderManager.LoaderCallba
         // improves performance if RecyclerView's layout size never changes
         recyclerView.setHasFixedSize(true);
 
+        // get the FloatingActionButton and configure its listener
+        FloatingActionButton addButton = (FloatingActionButton) view.findViewById(R.id.addButton);
+        addButton.setOnClickListener(
+                new View.OnClickListener() {
+                    // displays the AddEditFragment when FAB is touched
+                    // displays the AddEditFragment when FAB is touched
+                    @Override
+                    public void onClick(View view) {
+                        listener.onAddMenu();
+                    }
+                }
+        );
+
+
         return view;
     }
 
@@ -138,5 +154,10 @@ public class MenuFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         menuAdapter.swapCursor(null);
+    }
+
+    // called from MainActivity when other Fragment's update database
+    public void updateMenuList() {
+        menuAdapter.notifyDataSetChanged();
     }
 }
