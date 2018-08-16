@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -90,42 +91,36 @@ public class KeyboardFragment extends Fragment {
 
             @Override
             public void onKey(int primaryCode, int[] keyCodes) {
-                View focusCurrent = getActivity().getWindow().getCurrentFocus();
-
-/*                List<Fragment> listFragment = new ArrayList<Fragment>();
-                listFragment = (List<Fragment>) getFragmentManager().getFragments();
-                for (Iterator iterator = listFragment.iterator(); iterator.hasNext(); ) {
-                    Fragment obj = (Fragment) iterator.next();
-                    if (obj!= null && obj.getClass().equals(MenuFragment.class)) {
-                        shortcutKey(obj, primaryCode);
-                    }
-                }*/
-
-                if (focusCurrent == null || focusCurrent.getClass() != android.support.v7.widget.AppCompatEditText.class) {
-
-                    /**
-                     * Test for key codes
-                     */
-                    String key = String.valueOf(keyCodes[0]);
-                    if (key.length() > 3 || keyCodes[0] < 0 ) {
-                        return;
+                /*
+                Check which fragment is on the top
+                 */
+                Fragment topFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.topPaneContainer);
+                if (topFragment.getClass().equals(LoginFragment.class)) {
+                    inputData(primaryCode);
+                } else {
+                    if (topFragment.getClass().equals(MenuFragment.class)) {
+                            shortcutKey(topFragment, primaryCode, keyCodes);
+                            return;
                     } else {
-                        List<Fragment> listFragment = new ArrayList<Fragment>();
-                        listFragment = (List<Fragment>) getFragmentManager().getFragments();
-                        for (Iterator iterator = listFragment.iterator(); iterator.hasNext(); ) {
-                            Fragment obj = (Fragment) iterator.next();
-                            if (obj!= null && obj.getClass().equals(MenuFragment.class)) {
-                                shortcutKey(obj, primaryCode);
-                                return;
-                            }
+                        if (keyCodes[0] < 0) {
+                            getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
+                            getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
                         }
                     }
-                }
 
+                }
+            }
+
+            /**
+             * Method for input data across the keyboard
+             * @param primaryCode
+             */
+            private void inputData(int primaryCode) {
+                View focusCurrent = getActivity().getWindow().getCurrentFocus();
+                if (focusCurrent == null || focusCurrent.getClass() != android.support.v7.widget.AppCompatEditText.class) return;
                 EditText edittext = (EditText) focusCurrent;
                 Editable editable = edittext.getText();
                 int start = edittext.getSelectionStart();
-
                 // Apply the key to the edittext
                 if (primaryCode == CodeCancel) {
                     hideCustomKeyboard();
@@ -151,13 +146,23 @@ public class KeyboardFragment extends Fragment {
                 } else { // insert character
                     editable.insert(start, Character.toString((char) primaryCode));
                 }
-
-
             }
 
-            private void shortcutKey (Fragment obj, int primaryCode) {
-                int key = Integer.valueOf(Character.toString((char) primaryCode));
-                if (key >= 1 && key <=9) {
+            /**
+             * Method to go to next fragment with shortkey in keyboard
+             * @param obj
+             * @param primaryCode
+             */
+            private void shortcutKey (Fragment obj, int primaryCode, int[] keyCodes) {
+                String keyCode = String.valueOf(keyCodes[0]);
+                if (keyCode.length() > 3 || keyCodes[0] < 0 ) {
+                    if (keyCodes[0] < 0) {
+                        getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
+                        getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
+                    }
+                    return;
+                } else {
+                    int key = Integer.valueOf(Character.toString((char) primaryCode));
                     MenuFragment menuFragment = (MenuFragment) obj;
                     menuFragment.getListener().onItemMenuSelected(DatabaseDescription.Story.buildStoryUri(key), new Long(key));
                 }
