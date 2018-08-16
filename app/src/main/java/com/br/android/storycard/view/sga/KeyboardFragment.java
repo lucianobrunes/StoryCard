@@ -102,7 +102,7 @@ public class KeyboardFragment extends Fragment {
                             shortcutKey(topFragment, primaryCode, keyCodes);
                             return;
                     } else {
-                        if (keyCodes[0] < 0) {
+                        if (keyCodes[0] == 55006 ) {
                             getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
                             getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
                         }
@@ -156,7 +156,7 @@ public class KeyboardFragment extends Fragment {
             private void shortcutKey (Fragment obj, int primaryCode, int[] keyCodes) {
                 String keyCode = String.valueOf(keyCodes[0]);
                 if (keyCode.length() > 3 || keyCodes[0] < 0 ) {
-                    if (keyCodes[0] < 0) {
+                    if (keyCodes[0] == 55006) {
                         getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
                         getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
                     }

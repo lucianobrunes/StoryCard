@@ -26,7 +26,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:longClickable="false"/>
+                android:longClickable="false"
+                android:maxLength="4"/>
         </LinearLayout>
 
         <LinearLayout
@@ -52,7 +53,8 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:longClickable="false"
-                    android:inputType="numberPassword" />
+                    android:inputType="numberPassword"
+                    android:maxLength="6"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

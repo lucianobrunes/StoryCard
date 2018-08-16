@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
 import com.br.android.storycard.R;
 import com.br.android.storycard.data.DatabaseDescription;
 import com.br.android.storycard.data.DatabaseDescription.Story;
@@ -44,7 +46,7 @@ public class MenuFragment extends Fragment implements LoaderManager.LoaderCallba
 
         // inflate GUI and get reference to the RecyclerView
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewMenu);
+        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewMenu);
 
         // recyclerView should display items in a vertical list
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
@@ -92,7 +94,6 @@ public class MenuFragment extends Fragment implements LoaderManager.LoaderCallba
                     }
                 }
         );
-
 
         return view;
     }

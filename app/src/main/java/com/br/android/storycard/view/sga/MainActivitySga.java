@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.view.View;
+import android.view.WindowManager;
+
 import com.br.android.storycard.R;
 import com.br.android.storycard.view.sga.util.PrinterBluetooth;
 import com.br.android.storycard.view.storycard.AddEditFragment;
@@ -59,7 +62,11 @@ public class MainActivitySga extends AppCompatActivity
             PrinterBluetooth printer = new PrinterBluetooth();
             printer.sendToPrint();
         } else {
-            displayItemMenu(contactUri, R.id.topPaneContainer);
+            if (rowId == 10) {
+                this.finish();
+            } else {
+                displayItemMenu(contactUri, R.id.topPaneContainer);
+            }
         }
     }
 
@@ -131,4 +138,25 @@ public class MainActivitySga extends AppCompatActivity
         transaction.addToBackStack(null);
         transaction.commit(); // causes AddEditFragment to display
     }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
 }
