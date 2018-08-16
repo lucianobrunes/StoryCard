@@ -51,13 +51,6 @@ public class MenuFragment extends Fragment implements LoaderManager.LoaderCallba
 
         // create recyclerView's adapter and item click listener
         menuAdapter = new MenuAdapter();
-/*                new MenuAdapter.MenuClickListener() {
-                    @Override
-                    public void onClick(Uri storyUri) {
-                        listener.onItemMenuSelected(storyUri, rowId);
-                    }
-                }
-        );*/
         recyclerView.setAdapter(menuAdapter); // set the adapter
 
         ItemClickSupport.addTo(recyclerView)
@@ -159,5 +152,9 @@ public class MenuFragment extends Fragment implements LoaderManager.LoaderCallba
     // called from MainActivity when other Fragment's update database
     public void updateMenuList() {
         menuAdapter.notifyDataSetChanged();
+    }
+
+    public MenuFragmentListener getListener() {
+        return listener;
     }
 }

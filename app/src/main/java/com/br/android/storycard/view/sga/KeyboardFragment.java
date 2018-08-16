@@ -3,18 +3,30 @@ package com.br.android.storycard.view.sga;
 import android.content.Context;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import com.br.android.storycard.R;
+import com.br.android.storycard.data.DatabaseDescription;
+import com.br.android.storycard.view.sga.util.PrinterBluetooth;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public class KeyboardFragment extends Fragment {
 
     private KeyboardView mKeyboardView;
+    public static final String STORY_URI = "contact_uri";
+    private MenuFragment.MenuFragmentListener menuListener;
 
     // callback method implemented by MainActivity
     public interface KeyboardFragmentListener {
@@ -65,6 +77,7 @@ public class KeyboardFragment extends Fragment {
     {
         mOnKeyboardActionListener = new KeyboardView.OnKeyboardActionListener() {
 
+
             public final static int CodeDelete = -5; // Keyboard.KEYCODE_DELETE
             public final static int CodeCancel = -3; // Keyboard.KEYCODE_CANCEL
             public final static int CodePrev = 55000;
@@ -78,10 +91,41 @@ public class KeyboardFragment extends Fragment {
             @Override
             public void onKey(int primaryCode, int[] keyCodes) {
                 View focusCurrent = getActivity().getWindow().getCurrentFocus();
-                if (focusCurrent == null || focusCurrent.getClass() != android.support.v7.widget.AppCompatEditText.class) return;
+
+/*                List<Fragment> listFragment = new ArrayList<Fragment>();
+                listFragment = (List<Fragment>) getFragmentManager().getFragments();
+                for (Iterator iterator = listFragment.iterator(); iterator.hasNext(); ) {
+                    Fragment obj = (Fragment) iterator.next();
+                    if (obj!= null && obj.getClass().equals(MenuFragment.class)) {
+                        shortcutKey(obj, primaryCode);
+                    }
+                }*/
+
+                if (focusCurrent == null || focusCurrent.getClass() != android.support.v7.widget.AppCompatEditText.class) {
+
+                    /**
+                     * Test for key codes
+                     */
+                    String key = String.valueOf(keyCodes[0]);
+                    if (key.length() > 3 || keyCodes[0] < 0 ) {
+                        return;
+                    } else {
+                        List<Fragment> listFragment = new ArrayList<Fragment>();
+                        listFragment = (List<Fragment>) getFragmentManager().getFragments();
+                        for (Iterator iterator = listFragment.iterator(); iterator.hasNext(); ) {
+                            Fragment obj = (Fragment) iterator.next();
+                            if (obj!= null && obj.getClass().equals(MenuFragment.class)) {
+                                shortcutKey(obj, primaryCode);
+                                return;
+                            }
+                        }
+                    }
+                }
+
                 EditText edittext = (EditText) focusCurrent;
                 Editable editable = edittext.getText();
                 int start = edittext.getSelectionStart();
+
                 // Apply the key to the edittext
                 if (primaryCode == CodeCancel) {
                     hideCustomKeyboard();
@@ -109,6 +153,14 @@ public class KeyboardFragment extends Fragment {
                 }
 
 
+            }
+
+            private void shortcutKey (Fragment obj, int primaryCode) {
+                int key = Integer.valueOf(Character.toString((char) primaryCode));
+                if (key >= 1 && key <=9) {
+                    MenuFragment menuFragment = (MenuFragment) obj;
+                    menuFragment.getListener().onItemMenuSelected(DatabaseDescription.Story.buildStoryUri(key), new Long(key));
+                }
             }
 
             @Override
@@ -159,5 +211,24 @@ public class KeyboardFragment extends Fragment {
         mKeyboardView.setVisibility(View.GONE);
         mKeyboardView.setEnabled(false);
     }
+
+
+    // display item menu
+    private void displayItemMenu(Uri contactUri, int viewID) {
+        DetailFragmentSga detailFragmentSga = new DetailFragmentSga();
+
+        // specify story's Uri as an argument to the DetailFragment
+        Bundle arguments = new Bundle();
+        arguments.putParcelable(STORY_URI, contactUri);
+        detailFragmentSga.setArguments(arguments);
+
+        // use a FragmentTransaction to display the DetailFragment
+        FragmentTransaction transaction =
+                getFragmentManager().beginTransaction();
+        transaction.replace(viewID, detailFragmentSga);
+        transaction.addToBackStack(null);
+        transaction.commit(); // causes DetailFragment to display
+    }
+
 
 }
