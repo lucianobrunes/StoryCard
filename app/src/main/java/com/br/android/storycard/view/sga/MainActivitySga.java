@@ -2,11 +2,13 @@ package com.br.android.storycard.view.sga;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
+import android.widget.EditText;
 
 import com.br.android.storycard.R;
 import com.br.android.storycard.view.sga.util.PrinterBluetooth;
@@ -16,7 +18,7 @@ public class MainActivitySga extends AppCompatActivity
         implements KeyboardFragment.KeyboardFragmentListener,
                    LoginFragment.LoginFragmentListener,
                    MenuFragment.MenuFragmentListener,
-                   AddEditFragment.AddEditFragmentListener{
+                   AddEditFragment.AddEditFragmentListener {
 
     public static final String STORY_URI = "contact_uri";
     private KeyboardFragment keyboardFragment; // displays keyboard
@@ -50,10 +52,51 @@ public class MainActivitySga extends AppCompatActivity
     }
 
     @Override
-    public void onLogin() {
-            // removes top of back stack
-            getSupportFragmentManager().popBackStack();
-            displayMainMenu(R.id.topPaneContainer);
+    public void getDataInput(EditText editText, int primaryCode) {
+        Fragment topFragment = getSupportFragmentManager().findFragmentById(R.id.topPaneContainer);
+
+        // Search and return de user login 9999
+        EditText editTextV = (EditText) loginFragment.getActivity().findViewById(R.id.editTextV);
+        int user = 0;
+        if (editText.getText().length() == 4) {
+            user = Integer.valueOf(editText.getText().toString());
+        }
+
+        int CodeEnter = 55002;
+        int intName= editText.getId();
+        String stringName= getResources().getResourceEntryName(intName);
+
+        if (topFragment.getClass().equals(LoginFragment.class)) {
+            if (primaryCode == CodeEnter) {
+                 if ((editText.getText().length() == 6 && stringName.equals("editTextS") || user == 9999)) {
+                    // removes top of back stack
+                    getSupportFragmentManager().popBackStack();
+                    displayMainMenu(R.id.topPaneContainer);
+                }
+            }
+        }
+    }
+
+    /**
+     * Get the primaryCode and define the enable rules of views of login fragment
+     * @param primaryCode
+     */
+    @Override
+    public void getPrimaryCode(int primaryCode) {
+        int CodeEnter = 55002; // Enter Code
+        int CodeClear = 55006; // Cancel Code
+        Fragment topFragment = getSupportFragmentManager().findFragmentById(R.id.topPaneContainer);
+
+        if (primaryCode == CodeEnter) {
+            loginFragment.enableFields(true);
+        } else { // Code Cancel
+            loginFragment.enableFields(false);
+            if (!topFragment.getClass().equals(LoginFragment.class)) {
+                this.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
+                this.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
+            } else {
+            }
+        }
     }
 
     @Override
@@ -158,5 +201,6 @@ public class MainActivitySga extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
     }
+
 
 }

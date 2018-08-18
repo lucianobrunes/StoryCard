@@ -9,13 +9,26 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-
+import android.widget.TextView;
 import com.br.android.storycard.R;
+
+import java.text.DateFormat;
+import java.text.DateFormatSymbols;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 public class LoginFragment extends Fragment {
 
+    private TextView textViewV;
     private EditText editTextV ;
     private EditText editTextS ;
+    private TextView textViewS;
+    private TextView textViewDateTime;
+
 
     //variable for counting two successive up-down events
     int clickCount = 0;
@@ -46,8 +59,27 @@ public class LoginFragment extends Fragment {
     }
 
     private void initFields() {
-        editTextV = (EditText) getActivity().findViewById(R.id.editText1);
-        editTextS = (EditText) getActivity().findViewById(R.id.editText2);
+        textViewS = (TextView) getActivity().findViewById(R.id.textViewS);
+        textViewV = (TextView) getActivity().findViewById(R.id.textViewV);
+        editTextV = (EditText) getActivity().findViewById(R.id.editTextV);
+        editTextS = (EditText) getActivity().findViewById(R.id.editTextS);
+        textViewDateTime = (TextView) getActivity().findViewById(R.id.textViewCurrentDateTime);
+        textViewS.setVisibility(View.INVISIBLE);
+        editTextS.setVisibility(View.INVISIBLE);
+        textViewV.setVisibility(View.INVISIBLE);
+        editTextV.setVisibility(View.INVISIBLE);
+
+        String s;
+        Format formatter;
+        Date date = new Date();
+
+        Locale localeBR = new Locale("pt", "BR");
+        SimpleDateFormat fmt = new SimpleDateFormat("E dd/MM/yy HH:mm", localeBR);
+        s = fmt.format(date);
+        String currentDateTimeString = s.substring(0,1).toUpperCase().concat(s.substring(1));
+
+       textViewDateTime.setText(currentDateTimeString);
+
 
         /**
          * Desabilita o teclado nativo ao clicar nos editText (não funciona tentando abaixo desabilitar tudo)
@@ -60,14 +92,9 @@ public class LoginFragment extends Fragment {
         editTextV.requestFocus();
         editTextV.setShowSoftInputOnFocus(false);
         editTextV.setCursorVisible(false);
-        //editText1.setEnabled(false); (funciona mas teria que mudar a cor do desabilitado)
         editTextV.setFocusable(true);
         editTextV.setClickable(false);
         editTextV.setSelection(editTextV.getText().length());
-        editTextS.setShowSoftInputOnFocus(false);
-        editTextS.setClickable(false);
-        editTextS.setSelection(editTextS.getText().length());
-        editTextS.setCursorVisible(false);
 
         /**
          * Desabilitar o double tap ou double click que abria o menu de contexto (selection, cut, copy, past)
@@ -124,5 +151,47 @@ public class LoginFragment extends Fragment {
 
     public EditText getEditTextS() {
         return editTextS;
+    }
+
+
+    /**
+     * Method to control enable (visibility and text) of EditText (user and password)
+     * @param enable
+     */
+    public void enableFields (Boolean enable) {
+        if (enable) {
+            if (textViewV.getVisibility() == View.INVISIBLE) {
+                textViewV.setVisibility(View.VISIBLE);
+                editTextV.setVisibility(View.VISIBLE);
+                editTextV.getText().clear();
+                editTextV.requestFocus();
+            }
+            if (editTextV.getText().length() == 4 ) {
+                int user = Integer.valueOf(editTextV.getText().toString());
+                if (textViewS.getVisibility() == View.INVISIBLE && user != 9999) {
+                    textViewS.setVisibility(View.VISIBLE);
+                    editTextS.setVisibility(View.VISIBLE);
+                    editTextS.getText().clear();
+                    editTextS.setShowSoftInputOnFocus(false);
+                    editTextS.setClickable(false);
+                    editTextS.setSelection(editTextS.getText().length());
+                    editTextS.setCursorVisible(false);
+                }
+            }
+        } else {
+
+            if (textViewS.getVisibility() == View.VISIBLE) {
+                editTextS.getText().clear();
+                textViewS.setVisibility(View.INVISIBLE);
+                editTextS.setVisibility(View.INVISIBLE);
+                return;
+            }
+
+            if (textViewV.getVisibility() == View.VISIBLE) {
+                editTextV.getText().clear();
+                textViewV.setVisibility(View.INVISIBLE);
+                editTextV.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 }

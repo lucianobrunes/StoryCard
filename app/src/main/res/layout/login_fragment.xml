@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
@@ -14,14 +15,14 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/textViewV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="V: "
                 android:textSize="18dp" />
 
             <EditText
-                android:id="@+id/editText1"
+                android:id="@+id/editTextV"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -40,14 +41,14 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/textViewS"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="S: "
                     android:textSize="18dp"/>
 
                 <EditText
-                    android:id="@+id/editText2"
+                    android:id="@+id/editTextS"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
@@ -57,5 +58,20 @@
                     android:maxLength="6"/>
             </LinearLayout>
         </LinearLayout>
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom">
+
+            <TextView
+                android:id="@+id/textViewCurrentDateTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="bottom|center_horizontal"
+                android:textSize="28dp"
+                android:fontFamily="monospace"
+                />
+        </android.support.v7.widget.LinearLayoutCompat>
     </LinearLayout>
 </LinearLayout>

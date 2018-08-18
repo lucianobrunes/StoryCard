@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.br.android.storycard.R;
 import com.br.android.storycard.data.DatabaseDescription;
@@ -25,6 +26,8 @@ import com.br.android.storycard.view.util.ItemClickSupport;
 public class MenuFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int STORIES_LOADER = 0; // identifies Loader
+    private static final String HEADER_TERMINAL = "Terminal";
+    private int user;
 
     // callback method implemented by MainActivity
     public interface MenuFragmentListener {
@@ -44,6 +47,9 @@ public class MenuFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onCreateView(inflater, container, savedInstanceState);
         setHasOptionsMenu(true); // fragment has menu items to display
 
+        String user =  getArguments().getString("v");
+        setUser(Integer.valueOf(user));
+
         // inflate GUI and get reference to the RecyclerView
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewMenu);
@@ -52,8 +58,9 @@ public class MenuFragment extends Fragment implements LoaderManager.LoaderCallba
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
 
         // create recyclerView's adapter and item click listener
-        menuAdapter = new MenuAdapter();
+        menuAdapter = new MenuAdapter(getContext(), getUser());
         recyclerView.setAdapter(menuAdapter); // set the adapter
+
 
         ItemClickSupport.addTo(recyclerView)
                 .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
@@ -117,6 +124,25 @@ public class MenuFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getLoaderManager().initLoader(STORIES_LOADER, null, this);
+
+        /**
+         * Setup the header after enter
+         */
+        TextView textViewHeader = (TextView) getActivity().findViewById(R.id.textViewHeader);
+        String header="";
+
+        if (getUser() == 9999) {
+            header = HEADER_TERMINAL;
+        } else {
+            if (getUser() == 0) {
+                header = String.format("%04d", getUser());
+                header = header + " " + header;
+                header = header + "/" + String.format("%04d", getUser());
+            } else {
+                header = String.valueOf(getUser());
+            }
+        }
+        textViewHeader.setText(header);
     }
 
 
@@ -157,5 +183,13 @@ public class MenuFragment extends Fragment implements LoaderManager.LoaderCallba
 
     public MenuFragmentListener getListener() {
         return listener;
+    }
+
+    public int getUser() {
+        return user;
+    }
+
+    public void setUser(int user) {
+        this.user = user;
     }
 }

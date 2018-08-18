@@ -1,5 +1,6 @@
 package com.br.android.storycard.view.sga;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -9,9 +10,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.br.android.storycard.R;
 import com.br.android.storycard.data.DatabaseDescription.Story;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
+
+    private int user;
+    private List<String> menuItems999 = null;
+
+    /**
+     * Check if the user is 9999. If true go to different menu
+     * @param context
+     * @param user
+     */
+    public MenuAdapter(Context context, int user) {
+        this.user = user;
+        if (getUser() == 9999) {
+            menuItems999= Arrays.asList(context.getResources().getStringArray(R.array.main_menu9999));
+        }
+    }
 
     // interface implemented by MenuFragment to respond
     // when the user touches an item in the RecyclerView
@@ -22,6 +42,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
     // nested subclass of RecyclerView.ViewHolder used to implement
     // the view-holder pattern in the context of a RecyclerView
     public class ViewHolder extends RecyclerView.ViewHolder {
+
         public final TextView textView;
         private long rowID;
 
@@ -29,17 +50,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         public ViewHolder(final View itemView) {
             super(itemView);
             textView = (TextView) itemView.findViewById(android.R.id.text1);
-
-            // attach listener to itemView
-/*            itemView.setOnClickListener(
-                    new View.OnClickListener() {
-                        // executes when the contact in this ViewHolder is clicked
-                        @Override
-                        public void onClick(View view) {
-                            clickListener.onClick(Story.buildStoryUri(rowID));
-                        }
-                    }
-            );*/
         }
 
         // set the database row ID for the contact in this ViewHolder
@@ -51,12 +61,6 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
 
     // StoriesAdapter instance variables
     private Cursor cursor = null;
-   // public final MenuClickListener clickListener;
-
-    // constructor
-/*    public MenuAdapter(MenuAdapter.MenuClickListener clickListener) {
-        this.clickListener = clickListener;
-    }*/
 
     // sets up new list item and its ViewHolder
     @Override
@@ -70,17 +74,26 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
     // sets the text of the list item to display the search tag
     @Override
     public void onBindViewHolder(MenuAdapter.ViewHolder holder, int position) {
-        cursor.moveToPosition(position);
-        Long idItem = cursor.getLong(cursor.getColumnIndex(Story._ID));
-        holder.setRowID(idItem);
-        String nameItem = cursor.getString(cursor.getColumnIndex(Story.COLUMN_TITULO));
-        holder.textView.setText(idItem.toString() + " - " + nameItem);
+        if (getUser() != 9999) {
+            cursor.moveToPosition(position);
+            Long idItem = cursor.getLong(cursor.getColumnIndex(Story._ID));
+            holder.setRowID(idItem);
+            String nameItem = cursor.getString(cursor.getColumnIndex(Story.COLUMN_TITULO));
+            holder.textView.setText(idItem.toString() + " - " + nameItem);
+        } else {
+            final String item = menuItems999.get(position);
+            holder.textView.setText(item.toString());
+        }
     }
 
     // returns the number of items that adapter binds
     @Override
     public int getItemCount() {
-        return (cursor != null) ? cursor.getCount() : 0;
+        if (getUser() != 9999) {
+            return (cursor != null) ? cursor.getCount() : 0;
+        } else {
+            return menuItems999.size();
+        }
     }
 
     // swap this adapter's current Cursor for a new one
@@ -89,6 +102,11 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
+    public int getUser() {
+        return user;
+    }
 
-
+    public void setUser(int user) {
+        this.user = user;
+    }
 }

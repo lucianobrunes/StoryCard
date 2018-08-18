@@ -10,18 +10,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import com.br.android.storycard.R;
 import com.br.android.storycard.data.DatabaseDescription;
-import com.br.android.storycard.view.sga.util.PrinterBluetooth;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 public class KeyboardFragment extends Fragment {
 
@@ -31,7 +25,8 @@ public class KeyboardFragment extends Fragment {
 
     // callback method implemented by MainActivity
     public interface KeyboardFragmentListener {
-        void onLogin();
+        void getDataInput(EditText editText, int primaryCode);
+        void getPrimaryCode (int primaryCode);
     }
 
     // used to inform the MainActivity when a story is selected
@@ -78,7 +73,6 @@ public class KeyboardFragment extends Fragment {
     {
         mOnKeyboardActionListener = new KeyboardView.OnKeyboardActionListener() {
 
-
             public final static int CodeDelete = -5; // Keyboard.KEYCODE_DELETE
             public final static int CodeCancel = -3; // Keyboard.KEYCODE_CANCEL
             public final static int CodePrev = 55000;
@@ -89,26 +83,14 @@ public class KeyboardFragment extends Fragment {
             public final static int CodeNext = 55005;
             public final static int CodeClear = 55006;
 
+
             @Override
             public void onKey(int primaryCode, int[] keyCodes) {
-                /*
-                Check which fragment is on the top
-                 */
-                Fragment topFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.topPaneContainer);
-                if (topFragment.getClass().equals(LoginFragment.class)) {
-                    inputData(primaryCode);
-                } else {
-                    if (topFragment.getClass().equals(MenuFragment.class)) {
-                            shortcutKey(topFragment, primaryCode, keyCodes);
-                            return;
-                    } else {
-                        if (keyCodes[0] == 55006 ) {
-                            getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
-                            getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
-                        }
-                    }
-
+                if (primaryCode == CodeEnter || primaryCode == CodeClear) {
+                    listener.getPrimaryCode(primaryCode);
                 }
+                inputData(primaryCode);
+                shortcutKey(primaryCode);
             }
 
             /**
@@ -127,12 +109,11 @@ public class KeyboardFragment extends Fragment {
                 } else if (primaryCode == CodeDelete) {
                     if (editable != null && start > 0) editable.delete(start - 1, start);
                 } else if (primaryCode == CodeClear) {
+                    listener.getDataInput(edittext, primaryCode);
                     if (editable != null) editable.clear();
                 } else if (primaryCode == CodeEnter) {
-                    if (start > 0) {
-                        goToNextField(CodeEnter, edittext, View.FOCUS_FORWARD);
-                        edittext.setSelection(start - 1);
-                    }
+                    listener.getDataInput(edittext, primaryCode);
+                    goToNextField(CodeEnter, edittext, View.FOCUS_FORWARD);
                 } else if (primaryCode == CodeRight) {
                     if (start < edittext.length()) edittext.setSelection(start + 1);
                 } else if (primaryCode == CodeAllLeft) {
@@ -150,24 +131,23 @@ public class KeyboardFragment extends Fragment {
 
             /**
              * Method to go to next fragment with shortkey in keyboard
-             * @param obj
              * @param primaryCode
              */
-            private void shortcutKey (Fragment obj, int primaryCode, int[] keyCodes) {
-                String keyCode = String.valueOf(keyCodes[0]);
-                if (keyCode.length() > 3 || keyCodes[0] < 0 ) {
-                    if (keyCodes[0] == 55006) {
+            private void shortcutKey (int primaryCode) {
+                Fragment topFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.topPaneContainer);
+                if (topFragment.getClass().equals(MenuFragment.class)) {
+                    if (primaryCode == 55006) {
                         getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
                         getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK));
+                    } else {
+                        if (primaryCode != 55002 && primaryCode > 0 && primaryCode != 55000 && primaryCode != 55005) {
+                            int key = Integer.valueOf(Character.toString((char) primaryCode));
+                            MenuFragment menuFragment = (MenuFragment) topFragment;
+                            menuFragment.getListener().onItemMenuSelected(DatabaseDescription.Story.buildStoryUri(key), new Long(key));
+                        }
                     }
-                    return;
-                } else {
-                    int key = Integer.valueOf(Character.toString((char) primaryCode));
-                    MenuFragment menuFragment = (MenuFragment) obj;
-                    menuFragment.getListener().onItemMenuSelected(DatabaseDescription.Story.buildStoryUri(key), new Long(key));
                 }
             }
-
             @Override
             public void onPress(int arg0) {
             }
@@ -204,9 +184,6 @@ public class KeyboardFragment extends Fragment {
         if (focusNew != null && focusNew.getClass() != KeyboardView.class) {
             focusNew.requestFocus();
         } else {
-            if (codKey == 55002) { //Code Enter
-                listener.onLogin();
-            }
             edittext.requestFocus();
         }
     }
@@ -234,6 +211,5 @@ public class KeyboardFragment extends Fragment {
         transaction.addToBackStack(null);
         transaction.commit(); // causes DetailFragment to display
     }
-
 
 }

@@ -35,4 +35,12 @@
         <item>8. Atualizar</item>
         <item>9. Terminal</item>
     </string-array>
+
+    <string-array name="main_menu9999">
+        <item>1. Info</item>
+        <item>2. Conexão</item>
+        <item>3. Reiniciar</item>
+        <item>4. Estorno</item>
+    </string-array>
+
 </resources>
