@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.br.android.storycard.R;
+import com.br.android.storycard.view.sga.util.TaskScheduler;
 
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
@@ -69,16 +70,8 @@ public class LoginFragment extends Fragment {
         textViewV.setVisibility(View.INVISIBLE);
         editTextV.setVisibility(View.INVISIBLE);
 
-        String s;
-        Format formatter;
-        Date date = new Date();
 
-        Locale localeBR = new Locale("pt", "BR");
-        SimpleDateFormat fmt = new SimpleDateFormat("E dd/MM/yy HH:mm", localeBR);
-        s = fmt.format(date);
-        String currentDateTimeString = s.substring(0,1).toUpperCase().concat(s.substring(1));
-
-       textViewDateTime.setText(currentDateTimeString);
+        timer();
 
 
         /**
@@ -129,6 +122,24 @@ public class LoginFragment extends Fragment {
             }
         });
 
+    }
+
+    private void timer() {
+        TaskScheduler timer = new TaskScheduler();
+        timer.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                String s;
+                Format formatter;
+                Date date = new Date();
+
+                Locale localeBR = new Locale("pt", "BR");
+                SimpleDateFormat fmt = new SimpleDateFormat("E dd/MM/yy HH:mm", localeBR);
+                s = fmt.format(date);
+                String currentDateTimeString = s.substring(0,1).toUpperCase().concat(s.substring(1));
+                textViewDateTime.setText(currentDateTimeString);
+            }
+        },1000);
     }
 
     // set LoginFragmentListener when fragment attached
