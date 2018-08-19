@@ -1,6 +1,9 @@
 package com.br.android.storycard.view.sga;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -8,8 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
-
 import com.br.android.storycard.R;
 import com.br.android.storycard.view.sga.util.PrinterBluetooth;
 import com.br.android.storycard.view.storycard.AddEditFragment;
@@ -24,6 +27,9 @@ public class MainActivitySga extends AppCompatActivity
     private KeyboardFragment keyboardFragment; // displays keyboard
     private LoginFragment loginFragment;
     private MenuFragment menuFragment;
+    String sleepTime="2";
+    private ProgressDialog pDialog;
+    private Activity context;
 
     // display KeyboardFragment when MainActivity first loads
     @Override
@@ -36,6 +42,16 @@ public class MainActivitySga extends AppCompatActivity
             // create KeyboardFragment
             initFragments();
         }
+
+
+        context = this;
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
 
     }
 
@@ -69,14 +85,27 @@ public class MainActivitySga extends AppCompatActivity
         if (topFragment.getClass().equals(LoginFragment.class)) {
             if (primaryCode == CodeEnter) {
                  if ((editText.getText().length() == 6 && stringName.equals("editTextS") || user == 9999)) {
+                     if (user != 9999) {
+                         pDialog = new ProgressDialog(context);
+                         pDialog.setCancelable(false);
+                         pDialog.setTitle("Conectando...");
+                         pDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+                         pDialog.show();
+                         pDialog.getWindow().getDecorView().setSystemUiVisibility(
+                                 context.getWindow().getDecorView().getSystemUiVisibility());
+                         pDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+                         AsyncTaskRunner runner = new AsyncTaskRunner();
+                         runner.execute(sleepTime);
+                     } else {
+                         getSupportFragmentManager().popBackStack();
+                         displayMainMenu(R.id.topPaneContainer);
+                     }
                     // removes top of back stack
-                    getSupportFragmentManager().popBackStack();
-                    displayMainMenu(R.id.topPaneContainer);
                 }
             }
         }
     }
-
     /**
      * Get the primaryCode and define the enable rules of views of login fragment
      * @param primaryCode
@@ -182,25 +211,49 @@ public class MainActivitySga extends AppCompatActivity
         transaction.commit(); // causes AddEditFragment to display
     }
 
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
     }
 
+    private class AsyncTaskRunner extends AsyncTask<String, String, String> {
 
+        private String resp;
+
+        @Override
+        protected void onPreExecute() {
+            pDialog.setTitle("Conectando...");
+            pDialog.setMessage("Aguardando Resposta...");
+            pDialog.show();
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+            publishProgress("Conectando..."); // Calls onProgressUpdate()
+            try {
+                int time = Integer.parseInt(params[0])*1000;
+
+                Thread.sleep(time);
+                resp = "Slept for " + params[0] + " seconds";
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                resp = e.getMessage();
+            } catch (Exception e) {
+                e.printStackTrace();
+                resp = e.getMessage();
+            }
+            return resp;
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            getSupportFragmentManager().popBackStack();
+            displayMainMenu(R.id.topPaneContainer);
+            pDialog.dismiss();
+        }
+
+
+    }
 }

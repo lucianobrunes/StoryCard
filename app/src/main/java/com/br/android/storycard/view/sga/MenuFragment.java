@@ -136,8 +136,8 @@ public class MenuFragment extends Fragment implements LoaderManager.LoaderCallba
         } else {
             if (getUser() == 0) {
                 header = String.format("%04d", getUser());
-                header = header + " " + header;
-                header = header + "/" + String.format("%04d", getUser());
+                header = header + "/" + header;
+                //header = header + "/" + String.format("%04d", getUser());
             } else {
                 header = String.valueOf(getUser());
                 header = header + " " + header;

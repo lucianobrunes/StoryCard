@@ -134,7 +134,7 @@ public class LoginFragment extends Fragment {
                 Date date = new Date();
 
                 Locale localeBR = new Locale("pt", "BR");
-                SimpleDateFormat fmt = new SimpleDateFormat("E dd/MM/yy HH:mm", localeBR);
+                SimpleDateFormat fmt = new SimpleDateFormat("E dd/MM/yy HH:mm:ss", localeBR);
                 s = fmt.format(date);
                 String currentDateTimeString = s.substring(0,1).toUpperCase().concat(s.substring(1));
                 textViewDateTime.setText(currentDateTimeString);
@@ -175,6 +175,7 @@ public class LoginFragment extends Fragment {
                 textViewV.setVisibility(View.VISIBLE);
                 editTextV.setVisibility(View.VISIBLE);
                 editTextV.getText().clear();
+                textViewDateTime.setVisibility(View.INVISIBLE);
                 editTextV.requestFocus();
             }
             if (editTextV.getText().length() == 4 ) {
@@ -191,6 +192,7 @@ public class LoginFragment extends Fragment {
             }
         } else {
 
+
             if (textViewS.getVisibility() == View.VISIBLE) {
                 editTextS.getText().clear();
                 textViewS.setVisibility(View.INVISIBLE);
@@ -199,6 +201,7 @@ public class LoginFragment extends Fragment {
             }
 
             if (textViewV.getVisibility() == View.VISIBLE) {
+                textViewDateTime.setVisibility(View.VISIBLE);
                 editTextV.getText().clear();
                 textViewV.setVisibility(View.INVISIBLE);
                 editTextV.setVisibility(View.INVISIBLE);
