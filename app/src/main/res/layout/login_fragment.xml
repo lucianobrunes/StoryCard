@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
@@ -59,19 +59,17 @@
             </LinearLayout>
         </LinearLayout>
 
-        <android.support.v7.widget.LinearLayoutCompat
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="bottom">
-
             <TextView
                 android:id="@+id/textViewCurrentDateTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="bottom|center_horizontal"
-                android:textSize="28dp"
                 android:fontFamily="monospace"
-                />
-        </android.support.v7.widget.LinearLayoutCompat>
+                android:gravity="bottom|center_horizontal"
+                android:textSize="28dp" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
